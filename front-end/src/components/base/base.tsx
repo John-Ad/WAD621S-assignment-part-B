@@ -3,7 +3,15 @@
 //###############################
 
 import React from "react";
-import ReactDom from "react-dom";
+
+
+//###############################
+//      COMPONENT IMPORTS
+//###############################
+
+import ChatSection from "../chatSection/chatSection";
+import AccountSection from "../accountSection/accountSection";
+import Header from "../header/header";
 
 
 //###############################
@@ -14,14 +22,76 @@ import "./base.css";
 
 
 //###############################
+//      SECTIONS ENUM
+//###############################
+
+enum SECTION {
+    ACCOUNT,
+    CHAT
+}
+
+
+//###############################
+//      STATE/PROPS
+//###############################
+
+interface IState {
+    section: SECTION
+}
+
+
+//###############################
 //      CLASS DEFINITION
 //###############################
 
-class Base extends React.Component {
+class Base extends React.Component<{}, IState> {
+
+    constructor(props: any) {
+        super(props);
+
+        this.state = {
+            section: SECTION.CHAT
+        }
+    }
+
     render() {
         return (
-            <div>
-                Hello world
+            <div id="main-container" className="flex-column">
+
+                {
+
+                    //###############################
+                    //      HEADER
+                    //###############################
+
+                    <Header />
+
+                }
+
+
+                {
+
+                    //###############################
+                    //      CHAT SECTION
+                    //###############################
+
+                    this.state.section === SECTION.CHAT &&
+
+                    <ChatSection />
+                }
+
+
+                {
+
+                    //###############################
+                    //      ACCOUNT SECTION
+                    //###############################
+
+                    this.state.section === SECTION.ACCOUNT &&
+
+                    <AccountSection />
+                }
+
             </div>
         )
     }
