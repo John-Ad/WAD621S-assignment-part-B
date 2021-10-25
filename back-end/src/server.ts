@@ -4,9 +4,13 @@
 
 import path from 'path';
 import express from 'express';
+import http from "http";
 import { Express, Request, Response, NextFunction } from 'express';
+import { Server } from "socket.io";
 
 const app: Express = express();
+const server = http.createServer(app);
+const io = new Server(server);
 
 
 //###############################
@@ -50,9 +54,22 @@ app.get("/test", (req, res) => {
 
 
 
+//##############################################################
+//##############################################################
+//
+//          WEBSOCKET SETUP
+//      
+//##############################################################
+//##############################################################
+
+io.on('connection', (socket) => {
+    console.log("user connected");
+});
+
+
 //###############################
 //      START SERVER     
 //###############################
-app.listen(8081, 'localhost', () => {
+server.listen(8081, 'localhost', () => {
     console.log("...server is running...");
 });
