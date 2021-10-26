@@ -12,29 +12,28 @@ use NUST_CHAT_BOARD;
 /*--#####################################################*/
 
 create table UserInfo(
-    UserID int primary key auto_increment,
-    Username varchar(100) not null,
+    Username varchar(100) primary key,
     Email varchar(200) not null,
     Password varchar(100) not null
 );
 
 create table Topic(
     TopicID int primary key auto_increment,
-    UserID int not null,
+    Username varchar(100) not null,
     Name varchar(100) not null,
 
-    foreign key (UserID) references UserInfo(UserID)
+    foreign key (Username) references UserInfo(Username)
 );
 
 create table Message(
     MessageID int primary key auto_increment,
     TopicID int not null,
-    UserID int not null,
+    Username varchar(100) not null,
     Date_Added date not null,
     Content varchar(5000) not null,
     Edited bit not null,
 
-    foreign key (UserID) references UserInfo(UserID),
+    foreign key (Username) references UserInfo(Username),
     foreign key (TopicID) references Topic(TopicID)
 );
 
@@ -75,18 +74,18 @@ delimiter ;
 
 delimiter //
 create procedure sp_addTopic(
-    in userID int,
-    in name varchar(100)
+    in uname varchar(100),
+    in tname varchar(100)
 )
 begin
-    if(name in(select Name from Topic)) then
+    if(tname in(select Name from Topic)) then
         select 'topic already exists' as RESULT;
     else
-        if(name = '') then
+        if(tname = '') then
             select 'name for topic not specified' as RESULT;
         else
-            if(userID in(select UserID from UserInfo)) then
-                insert into Topic(UserID,Name) values(userID,name);
+            if(uname in(select Username from UserInfo)) then
+                insert into Topic(Username,Name) values(uname,tname);
                 select 'ok' as RESULT;
             else
                 select 'user does not exist' as RESULT;

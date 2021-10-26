@@ -31,7 +31,7 @@ export interface IAddUser {
 //##############################################
 
 export interface IAddTopic {
-    userID: number,
+    username: string,
     name: string
 }
 

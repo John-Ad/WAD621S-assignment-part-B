@@ -94,7 +94,7 @@ class Base extends React.Component<{}, IState> {
 
                     this.state.section === SECTION.CHAT &&
 
-                    <ChatSection />
+                    <ChatSection username={this.state.username} />
                 }
 
 
