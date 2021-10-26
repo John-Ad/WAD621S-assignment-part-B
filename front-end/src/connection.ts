@@ -5,7 +5,8 @@ const BaseUrl = "http://localhost:8081/";
 export enum REQS {
     ADD_USER = "user/add",
     ADD_TOPIC = "topic/add",
-    LOGIN = "user/login"
+    LOGIN = "user/login",
+    GET_ALL_TOPICS = "topic/all/"
 }
 
 class Connection {

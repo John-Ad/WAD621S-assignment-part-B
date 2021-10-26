@@ -74,3 +74,14 @@ export interface ILogin {
     username: string,
     password: string
 }
+
+
+//##############################################
+//     GET ALL TOPICS 
+//##############################################
+
+export interface IGetAllTopics {
+}
+export interface IAllTopics {
+    Name: string
+}
