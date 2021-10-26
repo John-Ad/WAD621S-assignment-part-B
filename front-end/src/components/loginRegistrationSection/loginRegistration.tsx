@@ -120,8 +120,8 @@ class LoginReg extends React.Component<IProps, IState> {
                     </React.Fragment>
                 }
 
-                <div id="login-button" className="center flex-row">
-                    <h3 className="center" onClick={(this.state.section === SECTION.LOGIN ? this.login : this.register)}>{this.state.section === SECTION.LOGIN ? "Login" : "Register"}</h3>
+                <div id="login-button" className="center flex-row" onClick={(this.state.section === SECTION.LOGIN ? this.login : this.register)}>
+                    <h3 className="center" >{this.state.section === SECTION.LOGIN ? "Login" : "Register"}</h3>
                 </div>
 
                 <div id="section-change" className="center">

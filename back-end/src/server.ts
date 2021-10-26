@@ -7,7 +7,7 @@ import express from 'express';
 import http from "http";
 import { Express, Request, Response, NextFunction } from 'express';
 import { Server } from "socket.io";
-import { IAddTopic, IAddUser, IGetAllTopics, ILogin, IResponse } from './interfaces';
+import { IAddMessage, IAddTopic, IAddUser, IGetAllTopics, ILogin, IResponse } from './interfaces';
 import DB_Connection, { buildQry, QUERY_PROCS } from "./database";
 
 const app: Express = express();
@@ -166,6 +166,37 @@ app.post("/topic/add", (req, res) => {
     });
 });
 
+
+//###############################
+//      ADD MESSAGE      
+//###############################
+app.post("/message/add", (req, res) => {
+
+    let data: IAddMessage = req.body;
+
+    let response: IResponse = {
+        stat: "ok",
+        data: {}
+    }
+
+
+    dbConnection.query(buildQry(QUERY_PROCS.ADD_MESSAGE, data), (error, result) => {
+        if (error) {
+            console.log(error.sqlMessage);
+            response.stat = "err";
+            response.data = error.sqlMessage;
+        }
+
+        if (result[0][0].RESULT != "ok") {
+            response.stat = "err";
+            response.data = result[0][0].RESULT;
+            console.log(result)
+        }
+
+        res.json(response);
+
+    });
+});
 
 
 //###############################

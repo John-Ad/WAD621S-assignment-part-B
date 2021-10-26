@@ -16,7 +16,7 @@ import ChatMessage from "../chatMessage/chatMessage";
 //      INTERFACE IMPORTS
 //###############################
 
-import { IAddTopic, IAllTopics, IGetAllTopics, IMessageByTopic, IResponse } from "../../../../back-end/src/interfaces";
+import { IAddMessage, IAddTopic, IAllTopics, IGetAllTopics, IMessageByTopic, IResponse } from "../../../../back-end/src/interfaces";
 
 
 //###############################
@@ -36,7 +36,10 @@ interface IState {
     topics: IAllTopics[],
     messageContainerHeight: number,
 
-    inTopic: string
+    currentTopic: string,
+
+    inTopic: string,
+    inMessage: string
 }
 interface IProps {
     username: string
@@ -52,37 +55,10 @@ class ChatSection extends React.Component<IProps, IState> {
         super(props);
 
         this.state = {
+            currentTopic: "",
             inTopic: "",
-            messages: [
-                {
-                    MessageID: 1,
-                    Username: "john-ad",
-                    Edited: 0,
-                    Content: "youre a piece of shit \n",
-                    Date_Added: null
-                },
-                {
-                    MessageID: 2,
-                    Username: "john-ad",
-                    Edited: 0,
-                    Content: "i hope you die askldjfnjsakldfnkdfnskdjfnjksdnfjsdnnnnnnnnnnnnfjjjjjjfkjsdjfnjkasdfjnjdfjndsjnfjnsjnfjnsdfjnjnsdfjnsdjknjknfjnkasjfdsjnfjdjndjnkfjnsdjfnsjkdnfjkndsfjksdjfjsdnafjnsjdnjsdnjndfjnfjdjfdjdskfnsjadnjsadnfjsdnjdsnfjsdfnjksafnkjanfkajsnfkjsanfkjasnfkjasnfkjsadfnkjsdnf sdfkjnsafkjnf sdfsdjnfjskfnd sfskjdanfksajnfs fsdkjfnsjfnsdf sdkjnfjsdfnsjf sdfkjsf\n",
-                    Date_Added: null
-                },
-                {
-                    MessageID: 1,
-                    Username: "john-ad",
-                    Edited: 0,
-                    Content: "youre a piece of shit \n",
-                    Date_Added: null
-                },
-                {
-                    MessageID: 2,
-                    Username: "john-ad",
-                    Edited: 0,
-                    Content: "i hope you die askldjfnjsakldfnkdfnskdjfnjksdnfjsdnnnnnnnnnnnnfjjjjjjfkjsdjfnjkasdfjnjdfjndsjnfjnsjnfjnsdfjnjnsdfjnsdjknjknfjnkasjfdsjnfjdjndjnkfjnsdjfnsjkdnfjkndsfjksdjfjsdnafjnsjdnjsdnjndfjnfjdjfdjdskfnsjadnjsadnfjsdnjdsnfjsdfnjksafnkjanfkajsnfkjsanfkjasnfkjasnfkjsadfnkjsdnf sdfkjnsafkjnf sdfsdjnfjskfnd sfskjdanfksajnfs fsdkjfnsjfnsdf sdkjnfjsdfnsjf sdfkjsf\n",
-                    Date_Added: null
-                }
-            ],
+            inMessage: "",
+            messages: [],
             topics: [],
             messageContainerHeight: 0
         }
@@ -131,6 +107,36 @@ class ChatSection extends React.Component<IProps, IState> {
         }
     }
 
+    changeTopic = (topic: string) => {
+        this.setState({ currentTopic: topic });
+    }
+
+    addMessage = async () => {
+        if (this.state.currentTopic === "") {
+            alert("no topic chosen");
+            return;
+        }
+
+        if (this.state.inMessage !== "") {
+            let data: IAddMessage = {
+                username: this.props.username,
+                topicName: this.state.currentTopic,
+                content: this.state.inMessage
+            }
+
+            let response: IResponse = await Connection.postReq(REQS.ADD_MESSAGE, data);
+
+            if (response.stat != "ok") {
+                alert(response.data);
+                return;
+            }
+
+            this.setState({ inMessage: "" });
+        } else {
+            alert("no message entered");
+        }
+    }
+
     render() {
         return (
             <div id="chat-section-container">
@@ -155,8 +161,8 @@ class ChatSection extends React.Component<IProps, IState> {
                                 //###############################
                                 this.state.topics.map(topic => {
                                     return (
-                                        <h3 className="topic-item center">
-                                            {topic.Name}
+                                        <h3 className="topic-item center" onClick={() => this.changeTopic(topic.TopicName)}>
+                                            {topic.TopicName}
                                         </h3>
                                     )
                                 })
@@ -207,9 +213,9 @@ class ChatSection extends React.Component<IProps, IState> {
                     </div>
 
                     <div id="send-message-container" className="max-size flex-row">
-                        <textarea />
+                        <textarea value={this.state.inMessage} onChange={ev => this.setState({ inMessage: ev.target.value }, () => console.log(this.state.inMessage))} />
 
-                        <div>
+                        <div onClick={this.addMessage}>
                             <h3 className="center">Send</h3>
                         </div>
                     </div>
