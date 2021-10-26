@@ -19,6 +19,7 @@ import Header from "../header/header";
 //###############################
 
 import "./base.css";
+import LoginReg from "../loginRegistrationSection/loginRegistration";
 
 
 //###############################
@@ -26,6 +27,7 @@ import "./base.css";
 //###############################
 
 enum SECTION {
+    LOGIN,
     ACCOUNT,
     CHAT
 }
@@ -36,7 +38,8 @@ enum SECTION {
 //###############################
 
 interface IState {
-    section: SECTION
+    section: SECTION,
+    username: string
 }
 
 
@@ -50,8 +53,13 @@ class Base extends React.Component<{}, IState> {
         super(props);
 
         this.state = {
-            section: SECTION.CHAT
+            section: SECTION.LOGIN,
+            username: ""
         }
+    }
+
+    setDetails = (uname: string) => {
+        this.setState({ username: uname, section: SECTION.CHAT });
     }
 
     render() {
@@ -68,6 +76,15 @@ class Base extends React.Component<{}, IState> {
 
                 }
 
+                {
+
+                    //###############################
+                    //      LOGIN/REGISTRATION
+                    //###############################
+                    this.state.section === SECTION.LOGIN &&
+                    <LoginReg setDetails={this.setDetails} />
+
+                }
 
                 {
 

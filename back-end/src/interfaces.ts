@@ -55,3 +55,12 @@ export interface IDeleteMessage {
     messageID: number
 }
 
+
+//##############################################
+//      RESPONSE MESSAGE
+//##############################################
+
+export interface IResponse {
+    stat: string,
+    data: any
+}

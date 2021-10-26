@@ -12,14 +12,14 @@ use NUST_CHAT_BOARD;
 /*--#####################################################*/
 
 create table UserInfo(
-    UserID int primary key,
+    UserID int primary key auto_increment,
     Username varchar(100) not null,
     Email varchar(200) not null,
     Password varchar(100) not null
 );
 
 create table Topic(
-    TopicID int primary key,
+    TopicID int primary key auto_increment,
     UserID int not null,
     Name varchar(100) not null,
 
@@ -27,7 +27,7 @@ create table Topic(
 );
 
 create table Message(
-    MessageID int primary key,
+    MessageID int primary key auto_increment,
     TopicID int not null,
     UserID int not null,
     Date_Added date not null,
@@ -46,19 +46,19 @@ create table Message(
 
 delimiter //
 create procedure sp_addUser(
-    in username varchar(100),
-    in email varchar(200),
+    in uname varchar(100),
+    in uemail varchar(200),
     in password varchar(100)
 )
 begin
-    if(username in(select username from UserInfo)) then
+    if(uname in(select Username from UserInfo)) then
         select 'username already exists' as RESULT;
     else
-        if(email in(select email from UserInfo)) then
+        if(uemail in(select Email from UserInfo)) then
             select 'email already in use' as RESULT;
         else
-            if(username != '' AND email != '' AND password != '') then
-                insert into UserInfo(Username,Email,Password) values(username,email,password);
+            if(uname != '' AND uemail != '' AND password != '') then
+                insert into UserInfo(Username,Email,Password) values(uname,uemail,password);
                 select 'ok' as RESULT;
             else
                 select 'please fill all fields' as RESULT;

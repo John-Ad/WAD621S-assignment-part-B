@@ -7,6 +7,8 @@ import express from 'express';
 import http from "http";
 import { Express, Request, Response, NextFunction } from 'express';
 import { Server } from "socket.io";
+import { IAddUser, IResponse } from './interfaces';
+import DB_Connection, { buildQry, QUERY_PROCS } from "./database";
 
 const app: Express = express();
 const server = http.createServer(app);
@@ -24,11 +26,21 @@ app.use(function(inRequest: Request, inResponse: Response, inNext: NextFunction)
     inNext();
 });
 
+app.use(express.json());
+app.use(express.urlencoded());
+
 
 //###############################
 //      SERVE SITE
 //###############################
 app.use("/", express.static("dist"));
+
+
+//###############################
+//      SETUP DB
+//###############################
+
+const dbConnection = new DB_Connection();
 
 
 
@@ -48,6 +60,47 @@ app.get("/test", (req, res) => {
     res.send("hello world");
 });
 
+
+
+//##############################################################
+//##############################################################
+//
+//          POST ENDPOINTS
+//      
+//##############################################################
+//##############################################################
+
+
+//###############################
+//      ADD USER      
+//###############################
+app.post("/user/add", (req, res) => {
+
+    let userData: IAddUser = req.body;
+
+    let response: IResponse = {
+        stat: "ok",
+        data: {}
+    }
+
+
+    dbConnection.query(buildQry(QUERY_PROCS.ADD_USER, userData), (error, result) => {
+        if (error) {
+            console.log(error.sqlMessage);
+            response.stat = "err";
+            response.data = error.sqlMessage;
+        }
+
+        if (result[0][0].RESULT != "ok") {
+            response.stat = "err";
+            response.data = result[0][0].RESULT;
+            console.log(result)
+        }
+
+        res.json(response);
+
+    });
+});
 
 //##############################################################
 //##############################################################

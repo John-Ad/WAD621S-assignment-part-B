@@ -19,7 +19,7 @@ dotenv.config();
 //##############################################
 
 export enum QUERY_PROCS {
-    ADD_USER = "call sp_sp_addUser",
+    ADD_USER = "call sp_addUser",
     ADD_TOPIC = "call sp_addTopic",
     ADD_MESSAGE = "call sp_addMessage",
 
@@ -103,9 +103,5 @@ class DB_Connection {
 }
 
 export default DB_Connection;
-
-
-
-
 
 

@@ -1,0 +1,48 @@
+#login-container{
+    grid-row: 2;
+
+    width: 400px;
+    height: fit-content;
+
+    margin-top: 30px;
+    align-items: center;
+
+    border: 2px solid #888;
+    border-radius: 10px;
+}
+
+#login-container h4{
+    font-family: sans-serif;
+}
+
+#login-container input{
+    width: 60%;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+#login-button{
+    width: 130px;
+    height: 30px;
+    margin-top: 20px;
+    border: 2px solid #888;
+    border-radius: 10px;
+}
+
+#login-button:hover{
+    cursor: pointer;
+    background-color: #AAAAAA;
+}
+
+#login-button h3{
+    width: fit-content;
+    font-family: sans-serif;
+}
+
+#section-change p{
+    color: #4444FF;
+}
+
+#section-change p:hover{
+    cursor: pointer;
+}
