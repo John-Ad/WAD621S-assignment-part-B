@@ -41,9 +41,9 @@ export interface IAddTopic {
 //##############################################
 
 export interface IAddMessage {
-    userID: number,
-    topicID: number,
-    content: number
+    username: string,
+    topicName: string,
+    content: string
 }
 
 
@@ -83,5 +83,5 @@ export interface ILogin {
 export interface IGetAllTopics {
 }
 export interface IAllTopics {
-    Name: string
+    TopicName: string
 }

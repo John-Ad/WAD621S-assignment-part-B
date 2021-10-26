@@ -56,7 +56,7 @@ export function buildQry(qProc: QUERY_PROCS, data: any): string {
         //#####################
         case QUERY_PROCS.ADD_MESSAGE:
             let messageAddData = (data as IAddMessage);
-            return `${QUERY_PROCS.ADD_MESSAGE}(${messageAddData.userID}, ${messageAddData.topicID}, '${messageAddData.content}');`;
+            return `${QUERY_PROCS.ADD_MESSAGE}('${messageAddData.username}', '${messageAddData.topicName}', '${messageAddData.content}');`;
 
 
         //#####################
