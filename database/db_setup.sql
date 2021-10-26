@@ -166,3 +166,27 @@ begin
 end //
 delimiter ;
 
+
+/*--#####################################################*/
+/*--#####     LOGIN*/
+/*--#####################################################*/
+
+delimiter //
+create procedure sp_login(
+    in uname varchar(100),
+    in pword varchar(100)
+)
+begin
+    if(uname not in(select Username from UserInfo)) then
+        select 'user does not exist' as RESULT;
+    else
+        if(pword not in(select Password from UserInfo where Username=uname)) then
+            select 'incorrect password' as RESULT;
+        else
+            select 'ok' as RESULT;
+        end if;
+    end if;
+end //
+delimiter ;
+
+
