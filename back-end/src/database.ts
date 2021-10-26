@@ -4,7 +4,7 @@
 
 import dotenv from "dotenv";
 import mysql from "mysql";
-import { IAddMessage, IAddTopic, IAddUser, IDeleteMessage, IGetMessagesByTopic } from "./interfaces";
+import { IAddMessage, IAddTopic, IAddUser, IDeleteMessage, IGetMessagesByTopic, ILogin } from "./interfaces";
 
 
 //##############################################
@@ -22,6 +22,8 @@ export enum QUERY_PROCS {
     ADD_USER = "call sp_addUser",
     ADD_TOPIC = "call sp_addTopic",
     ADD_MESSAGE = "call sp_addMessage",
+
+    LOGIN = "call sp_login",
 
     DELETE_MESSAGE = "call sp_deleteMessage",
 
@@ -54,6 +56,14 @@ export function buildQry(qProc: QUERY_PROCS, data: any): string {
         case QUERY_PROCS.ADD_MESSAGE:
             let messageAddData = (data as IAddMessage);
             return `${QUERY_PROCS.ADD_MESSAGE}(${messageAddData.userID}, ${messageAddData.topicID}, '${messageAddData.content}');`;
+
+
+        //#####################
+        //      LOGIN
+        //#####################
+        case QUERY_PROCS.LOGIN:
+            let loginDetails = (data as ILogin);
+            return `${QUERY_PROCS.LOGIN}('${loginDetails.username}','${loginDetails.password}');`;
 
 
         //#####################
@@ -103,5 +113,3 @@ class DB_Connection {
 }
 
 export default DB_Connection;
-
-

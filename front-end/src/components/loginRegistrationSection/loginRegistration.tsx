@@ -3,7 +3,7 @@
 //###############################
 
 import React from "react";
-import { IAddUser, IResponse } from "../../../../back-end/src/interfaces";
+import { IAddUser, ILogin, IResponse } from "../../../../back-end/src/interfaces";
 
 import Connection, { REQS } from "../../connection";
 
@@ -85,6 +85,24 @@ class LoginReg extends React.Component<IProps, IState> {
         }
     }
 
+    login = async () => {
+        if (this.validateInput()) {
+            let data: ILogin = {
+                username: this.state.inUsername,
+                password: this.state.inPassword
+            }
+
+            let response: IResponse = await Connection.postReq(REQS.LOGIN, data);
+
+            if (response.stat != "ok") {
+                alert(response.data);
+                return;
+            }
+
+            this.props.setDetails(data.username);
+        }
+    }
+
     render() {
         return (
             <div id="login-container" className="center flex-column">
@@ -103,7 +121,7 @@ class LoginReg extends React.Component<IProps, IState> {
                 }
 
                 <div id="login-button" className="center flex-row">
-                    <h3 className="center" onClick={(this.state.section === SECTION.LOGIN ? () => { } : this.register)}>{this.state.section === SECTION.LOGIN ? "Login" : "Register"}</h3>
+                    <h3 className="center" onClick={(this.state.section === SECTION.LOGIN ? this.login : this.register)}>{this.state.section === SECTION.LOGIN ? "Login" : "Register"}</h3>
                 </div>
 
                 <div id="section-change" className="center">

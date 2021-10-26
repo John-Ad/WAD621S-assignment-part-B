@@ -57,10 +57,20 @@ export interface IDeleteMessage {
 
 
 //##############################################
-//      RESPONSE MESSAGE
+//      RESPONSE 
 //##############################################
 
 export interface IResponse {
     stat: string,
     data: any
+}
+
+
+//##############################################
+//     LOGIN 
+//##############################################
+
+export interface ILogin {
+    username: string,
+    password: string
 }

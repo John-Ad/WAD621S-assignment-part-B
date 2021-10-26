@@ -3,7 +3,8 @@ import Axios, { AxiosRequestConfig, AxiosResponse } from "axios";
 const BaseUrl = "http://localhost:8081/";
 
 export enum REQS {
-    ADD_USER = "user/add"
+    ADD_USER = "user/add",
+    LOGIN = "user/login"
 }
 
 class Connection {
