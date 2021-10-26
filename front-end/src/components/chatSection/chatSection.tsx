@@ -16,7 +16,7 @@ import ChatMessage from "../chatMessage/chatMessage";
 //      INTERFACE IMPORTS
 //###############################
 
-import { IMessageByTopic } from "../../../../back-end/src/interfaces";
+import { IAddTopic, IMessageByTopic, IResponse } from "../../../../back-end/src/interfaces";
 
 
 //###############################
@@ -24,6 +24,7 @@ import { IMessageByTopic } from "../../../../back-end/src/interfaces";
 //###############################
 
 import "./chatSection.css";
+import Connection, { REQS } from "../../connection";
 
 
 //###############################
@@ -33,7 +34,12 @@ import "./chatSection.css";
 interface IState {
     messages: IMessageByTopic[],
     topics: string[],
-    messageContainerHeight: number
+    messageContainerHeight: number,
+
+    inTopic: string
+}
+interface IProps {
+    username: string
 }
 
 
@@ -41,11 +47,12 @@ interface IState {
 //      CLASS DEFINITION
 //###############################
 
-class ChatSection extends React.Component<{}, IState> {
-    constructor(props: any) {
+class ChatSection extends React.Component<IProps, IState> {
+    constructor(props: IProps) {
         super(props);
 
         this.state = {
+            inTopic: "",
             messages: [
                 {
                     MessageID: 1,
@@ -85,6 +92,30 @@ class ChatSection extends React.Component<{}, IState> {
     componentDidMount() {
         let mxMsgH = window.innerHeight - 90;
         this.setState({ messageContainerHeight: mxMsgH });
+    }
+
+
+    addTopic = async () => {
+        if (this.state.inTopic != "") {
+
+            let data: IAddTopic = {
+                name: this.state.inTopic,
+                username: this.props.username
+            }
+
+            let result: IResponse = await Connection.postReq(REQS.ADD_TOPIC, data);
+
+            if (result.stat != "ok") {
+                alert("failed to add topic: " + result.data);
+                return;
+            }
+
+            alert("topic successfully added");
+            this.setState({ inTopic: "" });
+            return;
+
+        }
+        alert("enter a topic");
     }
 
     render() {
@@ -132,8 +163,8 @@ class ChatSection extends React.Component<{}, IState> {
                     </div>
 
                     <div id="topic-add-container" className="center flex-row">
-                        <input type="text" />
-                        <div className="flex-row">
+                        <input type="text" onChange={ev => this.setState({ inTopic: ev.target.value })} />
+                        <div className="flex-row" onClick={this.addTopic}>
                             <p>Add</p>
                         </div>
                     </div>
