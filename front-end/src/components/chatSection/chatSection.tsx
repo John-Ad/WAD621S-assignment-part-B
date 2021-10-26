@@ -16,7 +16,7 @@ import ChatMessage from "../chatMessage/chatMessage";
 //      INTERFACE IMPORTS
 //###############################
 
-import { IAddTopic, IMessageByTopic, IResponse } from "../../../../back-end/src/interfaces";
+import { IAddTopic, IAllTopics, IGetAllTopics, IMessageByTopic, IResponse } from "../../../../back-end/src/interfaces";
 
 
 //###############################
@@ -33,7 +33,7 @@ import Connection, { REQS } from "../../connection";
 
 interface IState {
     messages: IMessageByTopic[],
-    topics: string[],
+    topics: IAllTopics[],
     messageContainerHeight: number,
 
     inTopic: string
@@ -83,7 +83,7 @@ class ChatSection extends React.Component<IProps, IState> {
                     Date_Added: null
                 }
             ],
-            topics: ["t1", "t2", "t3"],
+            topics: [],
             messageContainerHeight: 0
         }
     }
@@ -92,6 +92,7 @@ class ChatSection extends React.Component<IProps, IState> {
     componentDidMount() {
         let mxMsgH = window.innerHeight - 90;
         this.setState({ messageContainerHeight: mxMsgH });
+        this.getAllTopics();
     }
 
 
@@ -112,10 +113,22 @@ class ChatSection extends React.Component<IProps, IState> {
 
             alert("topic successfully added");
             this.setState({ inTopic: "" });
+            this.getAllTopics();
             return;
 
         }
         alert("enter a topic");
+    }
+
+    getAllTopics = async () => {
+        let data: IGetAllTopics = {}
+        let response: IResponse = await Connection.getReq(REQS.GET_ALL_TOPICS, data);
+
+        if (response.stat === "ok") {
+            this.setState({ topics: response.data });
+        } else {
+            this.setState({ topics: [] });
+        }
     }
 
     render() {
@@ -143,7 +156,7 @@ class ChatSection extends React.Component<IProps, IState> {
                                 this.state.topics.map(topic => {
                                     return (
                                         <h3 className="topic-item center">
-                                            {topic}
+                                            {topic.Name}
                                         </h3>
                                     )
                                 })

@@ -7,7 +7,7 @@ import express from 'express';
 import http from "http";
 import { Express, Request, Response, NextFunction } from 'express';
 import { Server } from "socket.io";
-import { IAddTopic, IAddUser, ILogin, IResponse } from './interfaces';
+import { IAddTopic, IAddUser, IGetAllTopics, ILogin, IResponse } from './interfaces';
 import DB_Connection, { buildQry, QUERY_PROCS } from "./database";
 
 const app: Express = express();
@@ -60,6 +60,37 @@ app.get("/test", (req, res) => {
     res.send("hello world");
 });
 
+
+//###############################
+//      GET ALL TOPICS      
+//###############################
+app.get("/topic/all/:data", (req, res) => {
+
+    let data: IGetAllTopics = JSON.parse(req.params.data);
+
+    let response: IResponse = {
+        stat: "ok",
+        data: {}
+    }
+
+    dbConnection.query(buildQry(QUERY_PROCS.GET_ALL_TOPICS, data), (error, result) => {
+        if (error) {
+            console.log(error.sqlMessage);
+            response.stat = "err";
+            response.data = error.sqlMessage;
+        } else {
+            if (result[0].length > 0) {
+                response.data = result[0];
+            } else {
+                response.stat = "err";
+                response.data = "no records found";
+            }
+        }
+
+        res.json(response);
+
+    });
+});
 
 
 //##############################################################

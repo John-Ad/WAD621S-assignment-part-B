@@ -189,3 +189,17 @@ end //
 delimiter ;
 
 
+/*--#####################################################*/
+/*--#####     GET ALL TOPICS*/
+/*--#####################################################*/
+
+delimiter //
+create procedure sp_getAllTopics(
+)
+begin
+    select Name from Topic;
+end //
+delimiter ;
+
+
+
