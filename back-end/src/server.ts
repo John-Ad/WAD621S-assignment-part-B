@@ -7,12 +7,12 @@ import express from 'express';
 import http from "http";
 import { Express, Request, Response, NextFunction } from 'express';
 import { Server } from "socket.io";
-import { IAddMessage, IAddTopic, IAddUser, IGetAllTopics, ILogin, IResponse } from './interfaces';
+import { IAddMessage, IMessageByTopic, IAddTopic, IAddUser, IGetAllTopics, ILogin, IResponse } from './interfaces';
 import DB_Connection, { buildQry, QUERY_PROCS } from "./database";
 
 const app: Express = express();
 const server = http.createServer(app);
-const io = new Server(server);
+const io = new Server(server, { cors: { origin: "*" } });
 
 
 //###############################
@@ -187,10 +187,16 @@ app.post("/message/add", (req, res) => {
             response.data = error.sqlMessage;
         }
 
-        if (result[0][0].RESULT != "ok") {
+        if (result[0][0].RESULT) {
             response.stat = "err";
             response.data = result[0][0].RESULT;
             console.log(result)
+        } else {
+            //#####################################
+            //      SEND MESSAGE TO ALL CLIENTS   
+            //#####################################
+            let message: IMessageByTopic = result[0][0];
+            io.emit(data.topicName, JSON.stringify(message));
         }
 
         res.json(response);
