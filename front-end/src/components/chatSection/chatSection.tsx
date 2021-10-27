@@ -24,7 +24,7 @@ import { IAddMessage, IAddTopic, IAllTopics, IGetAllTopics, IMessageByTopic, IRe
 //###############################
 
 import "./chatSection.css";
-import Connection, { REQS } from "../../connection";
+import Connection, { REQS, ChatWS } from "../../connection";
 
 
 //###############################
@@ -32,6 +32,8 @@ import Connection, { REQS } from "../../connection";
 //###############################
 
 interface IState {
+    webSock: ChatWS,
+
     messages: IMessageByTopic[],
     topics: IAllTopics[],
     messageContainerHeight: number,
@@ -51,10 +53,15 @@ interface IProps {
 //###############################
 
 class ChatSection extends React.Component<IProps, IState> {
+
+    //###############################
+    //      CONSTRUCTOR
+    //###############################
     constructor(props: IProps) {
         super(props);
 
         this.state = {
+            webSock: null,
             currentTopic: "",
             inTopic: "",
             inMessage: "",
@@ -65,6 +72,9 @@ class ChatSection extends React.Component<IProps, IState> {
     }
 
 
+    //###############################
+    //      COMPONENT DID MOUNT
+    //###############################
     componentDidMount() {
         let mxMsgH = window.innerHeight - 90;
         this.setState({ messageContainerHeight: mxMsgH });
@@ -72,6 +82,9 @@ class ChatSection extends React.Component<IProps, IState> {
     }
 
 
+    //###############################
+    //      ADD TOPIC
+    //###############################
     addTopic = async () => {
         if (this.state.inTopic != "") {
 
@@ -96,6 +109,10 @@ class ChatSection extends React.Component<IProps, IState> {
         alert("enter a topic");
     }
 
+
+    //###############################
+    //      GET ALL TOPICS
+    //###############################
     getAllTopics = async () => {
         let data: IGetAllTopics = {}
         let response: IResponse = await Connection.getReq(REQS.GET_ALL_TOPICS, data);
@@ -107,10 +124,30 @@ class ChatSection extends React.Component<IProps, IState> {
         }
     }
 
+
+    //###############################
+    //      CHANGE TOPIC
+    //###############################
     changeTopic = (topic: string) => {
         this.setState({ currentTopic: topic });
+        this.setState({ webSock: new ChatWS(topic, this.appendMessage) })
     }
 
+
+    //###############################
+    //      APPEND MESSAGE
+    //###############################
+    appendMessage = async (message: IMessageByTopic) => {
+        let messages = this.state.messages.slice();
+        messages.push(message);
+        console.log(message);
+        this.setState({ messages: messages });
+    }
+
+
+    //###############################
+    //      ADD MESSAGE
+    //###############################
     addMessage = async () => {
         if (this.state.currentTopic === "") {
             alert("no topic chosen");
@@ -137,6 +174,9 @@ class ChatSection extends React.Component<IProps, IState> {
         }
     }
 
+    //###############################
+    //      RENDER METHOD
+    //###############################
     render() {
         return (
             <div id="chat-section-container">

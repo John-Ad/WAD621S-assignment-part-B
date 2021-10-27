@@ -114,7 +114,12 @@ begin
         else
             if(uname in(select Username from UserInfo)) then
                 insert into Message(TopicName, Username, Date_Added, Content, Edited) values(tname, uname, curdate(), content, 0);
-                select 'ok' as RESULT;
+
+                select Username, MessageID, Date_Added, Content, Edited
+                from Message
+                where Username=uname
+                order by MessageID desc
+                limit 1;
             else
                 select 'user does not exist' as RESULT;
             end if;
