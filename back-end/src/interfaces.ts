@@ -52,7 +52,8 @@ export interface IAddMessage {
 //##############################################
 
 export interface IDeleteMessage {
-    messageID: number
+    messageID: number,
+    topicName: string
 }
 
 

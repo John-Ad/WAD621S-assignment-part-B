@@ -17,6 +17,19 @@
     font-size: 15px;
     font-weight: bold;
 }
+#message-header div{
+    width: 70px;
+    height: 17px;
+    text-align: center;
+    color: white;
+    background-color: #FF4444;
+    border: 2px solid red;
+    border-radius: 10px;
+}
+#message-header div:hover{
+    cursor: pointer;
+    background-color: red;
+}
 
 #message-content{
     width: 95%;

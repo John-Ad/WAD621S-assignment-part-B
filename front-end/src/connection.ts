@@ -8,6 +8,7 @@ export enum REQS {
     ADD_USER = "user/add",
     ADD_TOPIC = "topic/add",
     ADD_MESSAGE = "message/add",
+    DELETE_MESSAGE = "message/delete",
     LOGIN = "user/login",
     GET_ALL_TOPICS = "topic/all/"
 }
@@ -40,7 +41,7 @@ export class ChatWS {
 
     private socket: Socket;
 
-    constructor(topicName: string, appendMessage: any) {      //    appendMessage is a callback function 
+    constructor(topicName: string, appendMessage: any, removeMessage: any) {      //    appendMessage is a callback function 
 
         //###############################
         //      CONNECT TO SERVER 
@@ -48,9 +49,15 @@ export class ChatWS {
         //      FOR TOPIC
         //###############################
         this.socket = io("http://localhost:8081");
-        this.socket.on(topicName, (data) => {
+
+        this.socket.on(topicName + "Add", (data) => {
             let message: IMessageByTopic = JSON.parse(data);
             appendMessage(message);
+        });
+
+        this.socket.on(topicName + "Remove", (data) => {
+            let messageToRem: number = JSON.parse(data);
+            removeMessage(messageToRem);
         });
 
     }
@@ -60,6 +67,13 @@ export class ChatWS {
     //###############################
     public send(data: any) {
         this.socket.emit("client test", data);
+    }
+
+    //#######################################
+    //      DISCONNECT SOCKET FROM SERVER
+    //#######################################
+    public disconnect() {
+        this.socket.disconnect();
     }
 }
 

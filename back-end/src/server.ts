@@ -7,7 +7,7 @@ import express from 'express';
 import http from "http";
 import { Express, Request, Response, NextFunction } from 'express';
 import { Server } from "socket.io";
-import { IAddMessage, IMessageByTopic, IAddTopic, IAddUser, IGetAllTopics, ILogin, IResponse } from './interfaces';
+import { IAddMessage, IMessageByTopic, IAddTopic, IAddUser, IGetAllTopics, ILogin, IResponse, IDeleteMessage } from './interfaces';
 import DB_Connection, { buildQry, QUERY_PROCS } from "./database";
 
 const app: Express = express();
@@ -190,13 +190,51 @@ app.post("/message/add", (req, res) => {
         if (result[0][0].RESULT) {
             response.stat = "err";
             response.data = result[0][0].RESULT;
-            console.log(result)
+            console.log(result[0][0].RESULT);
         } else {
             //#####################################
             //      SEND MESSAGE TO ALL CLIENTS   
             //#####################################
             let message: IMessageByTopic = result[0][0];
-            io.emit(data.topicName, JSON.stringify(message));
+            io.emit(data.topicName + "Add", JSON.stringify(message));
+        }
+
+        res.json(response);
+
+    });
+});
+
+
+//###############################
+//      DELETE MESSAGE      
+//###############################
+app.post("/message/delete", (req, res) => {
+
+    let data: IDeleteMessage = req.body;
+
+    let response: IResponse = {
+        stat: "ok",
+        data: {}
+    }
+
+
+    dbConnection.query(buildQry(QUERY_PROCS.DELETE_MESSAGE, data), (error, result) => {
+        if (error) {
+            console.log(error.sqlMessage);
+            response.stat = "err";
+            response.data = error.sqlMessage;
+        }
+
+        if (result[0][0].RESULT != "ok") {
+            response.stat = "err";
+            response.data = result[0][0].RESULT;
+            console.log(result[0][0].RESULT);
+        } else {
+            //###############################################
+            //      SEND MESSAGE TO REMOVE TO ALL CLIENTS   
+            //###############################################
+            let messageToRemove: number = data.messageID;
+            io.emit(data.topicName + "Remove", JSON.stringify(messageToRemove));
         }
 
         res.json(response);

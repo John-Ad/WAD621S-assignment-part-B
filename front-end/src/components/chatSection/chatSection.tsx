@@ -129,8 +129,11 @@ class ChatSection extends React.Component<IProps, IState> {
     //      CHANGE TOPIC
     //###############################
     changeTopic = (topic: string) => {
-        this.setState({ currentTopic: topic });
-        this.setState({ webSock: new ChatWS(topic, this.appendMessage) })
+        if (this.state.webSock) {
+            this.state.webSock.disconnect();
+        }
+        this.setState({ currentTopic: topic, messages: [] });
+        this.setState({ webSock: new ChatWS(topic, this.appendMessage, this.removeMessage) })
     }
 
 
@@ -140,7 +143,16 @@ class ChatSection extends React.Component<IProps, IState> {
     appendMessage = async (message: IMessageByTopic) => {
         let messages = this.state.messages.slice();
         messages.push(message);
-        console.log(message);
+        this.setState({ messages: messages });
+    }
+
+
+    //###############################
+    //      REMOVE MESSAGE
+    //###############################
+    removeMessage = async (messageToRem: number) => {
+        let messages = this.state.messages.slice();
+        messages = messages.filter(m => m.MessageID != messageToRem);   // REMOVE MESSAGE WITH ID OF messageToRem
         this.setState({ messages: messages });
     }
 
@@ -241,7 +253,7 @@ class ChatSection extends React.Component<IProps, IState> {
                         {
                             this.state.messages.map(message => {
                                 return (
-                                    <ChatMessage message={message} />
+                                    <ChatMessage message={message} username={this.props.username} topicName={this.state.currentTopic} />
                                 )
                             })
                         }

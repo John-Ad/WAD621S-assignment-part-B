@@ -143,6 +143,8 @@ begin
     else
         delete from Message
         where MessageID = messageID;
+
+        select 'ok' as RESULT;
     end if;
 end //
 delimiter ;
