@@ -4,7 +4,7 @@
 //##############################################
 
 export interface IGetMessagesByTopic {
-    topicID: number
+    topicName: string
 }
 export interface IMessageByTopic {
     Username: string,

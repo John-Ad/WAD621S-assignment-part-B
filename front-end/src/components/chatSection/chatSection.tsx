@@ -16,7 +16,7 @@ import ChatMessage from "../chatMessage/chatMessage";
 //      INTERFACE IMPORTS
 //###############################
 
-import { IAddMessage, IAddTopic, IAllTopics, IGetAllTopics, IMessageByTopic, IResponse } from "../../../../back-end/src/interfaces";
+import { IAddMessage, IAddTopic, IAllTopics, IGetAllTopics, IGetMessagesByTopic, IMessageByTopic, IResponse } from "../../../../back-end/src/interfaces";
 
 
 //###############################
@@ -132,8 +132,30 @@ class ChatSection extends React.Component<IProps, IState> {
         if (this.state.webSock) {
             this.state.webSock.disconnect();
         }
-        this.setState({ currentTopic: topic, messages: [] });
+        this.setState({ currentTopic: topic, messages: [] }, () => this.getMessagesByTopic());
         this.setState({ webSock: new ChatWS(topic, this.appendMessage, this.removeMessage) })
+    }
+
+
+    //###############################
+    //      GET MESSAGES BY TOPIC
+    //###############################
+    getMessagesByTopic = async () => {
+        let data: IGetMessagesByTopic = {
+            topicName: this.state.currentTopic
+        }
+
+        let response: IResponse = await Connection.getReq(REQS.GET_MESSAGES_BY_TOPIC, data);
+
+        if (response.stat != "ok") {
+            alert(response.data);
+            return;
+        }
+
+        this.setState({ messages: response.data }, () => {
+            let elem = document.getElementById("messages-container");
+            elem.scrollTop = elem.scrollHeight;
+        });
     }
 
 
@@ -143,7 +165,10 @@ class ChatSection extends React.Component<IProps, IState> {
     appendMessage = async (message: IMessageByTopic) => {
         let messages = this.state.messages.slice();
         messages.push(message);
-        this.setState({ messages: messages });
+        this.setState({ messages: messages }, () => {
+            let elem = document.getElementById("messages-container");
+            elem.scrollTop = elem.scrollHeight;
+        });
     }
 
 
@@ -250,6 +275,10 @@ class ChatSection extends React.Component<IProps, IState> {
                 <div id="message-section-container" style={{ maxHeight: this.state.messageContainerHeight }}>
 
                     <div id="messages-container" className="max-size flex-column">
+                        <div id="choose-topic-msg" className="center flex-row">
+                            <h3 className="center">{this.state.currentTopic === "" ? "Choose a topic..." : this.state.currentTopic}</h3>
+                        </div>
+
                         {
                             this.state.messages.map(message => {
                                 return (
@@ -259,9 +288,10 @@ class ChatSection extends React.Component<IProps, IState> {
                         }
 
                         {
-                            this.state.messages.length === 0 &&
+                            (this.state.messages.length === 0 && this.state.currentTopic != "") &&
                             <h3 className="center">No messages</h3>
                         }
+
                     </div>
 
                     <div id="send-message-container" className="max-size flex-row">

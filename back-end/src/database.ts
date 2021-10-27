@@ -75,12 +75,12 @@ export function buildQry(qProc: QUERY_PROCS, data: any): string {
             return `${QUERY_PROCS.DELETE_MESSAGE}(${messageDeleteData.messageID});`;
 
 
-        //############################
+        //###############################
         //      GET MESSAGES BY TOPIC
-        //############################
+        //###############################
         case QUERY_PROCS.GET_MESSAGES_BY_TOPIC:
             let messagesByTopicData = (data as IGetMessagesByTopic);
-            return `${QUERY_PROCS.GET_MESSAGES_BY_TOPIC}(${messagesByTopicData.topicID});`;
+            return `${QUERY_PROCS.GET_MESSAGES_BY_TOPIC}('${messagesByTopicData.topicName}');`;
 
 
         //############################
