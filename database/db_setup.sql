@@ -135,14 +135,14 @@ delimiter ;
 
 delimiter //
 create procedure sp_deleteMessage(
-    in messageID int
+    in mID int
 )
 begin
-    if(messageID not in(select MessageID from Message)) then
+    if(mID not in(select MessageID from Message)) then
         select 'message does not exist' as RESULT;
     else
         delete from Message
-        where MessageID = messageID;
+        where MessageID = mID;
 
         select 'ok' as RESULT;
     end if;
@@ -162,7 +162,9 @@ begin
     if(tname not in(select TopicName from Topic)) then
         select 'topic does not exist' as RESULT;
     else
-        select Username, MessageID, Date_Added, Content, Edited from Message;
+        select Username, MessageID, Date_Added, Content, Edited
+        from Message
+        where TopicName=tname;
     end if;
 end //
 delimiter ;
