@@ -7,7 +7,7 @@ import express from 'express';
 import http from "http";
 import { Express, Request, Response, NextFunction } from 'express';
 import { Server } from "socket.io";
-import { IAddMessage, IMessageByTopic, IAddTopic, IAddUser, IGetAllTopics, ILogin, IResponse, IDeleteMessage, IGetMessagesByTopic } from './interfaces';
+import { IAddMessage, IMessageByTopic, IAddTopic, IAddUser, IGetAllTopics, ILogin, IResponse, IDeleteMessage, IGetMessagesByTopic, IEditMessage } from './interfaces';
 import DB_Connection, { buildQry, QUERY_PROCS } from "./database";
 
 const app: Express = express();
@@ -229,6 +229,43 @@ app.post("/message/add", (req, res) => {
             //#####################################
             let message: IMessageByTopic = result[0][0];
             io.emit(data.topicName + "Add", JSON.stringify(message));
+        }
+
+        res.json(response);
+
+    });
+});
+
+
+//###############################
+//      EDIT MESSAGE      
+//###############################
+app.post("/message/edit", (req, res) => {
+
+    let data: IEditMessage = req.body;
+
+    let response: IResponse = {
+        stat: "ok",
+        data: {}
+    }
+
+
+    dbConnection.query(buildQry(QUERY_PROCS.EDIT_MESSAGE, data), (error, result) => {
+        if (error) {
+            console.log(error.sqlMessage);
+            response.stat = "err";
+            response.data = error.sqlMessage;
+        }
+
+        if (result[0][0].RESULT != "ok") {
+            response.stat = "err";
+            response.data = result[0][0].RESULT;
+            console.log(result[0][0].RESULT);
+        } else {
+            //#########################################################
+            //      SEND MESSAGE TO UPDATE TO ALL CLIENTS   
+            //#########################################################
+            io.emit(data.topicName + "Update", JSON.stringify(data));
         }
 
         res.json(response);
