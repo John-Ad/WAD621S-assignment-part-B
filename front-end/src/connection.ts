@@ -1,6 +1,6 @@
 import Axios, { AxiosRequestConfig, AxiosResponse } from "axios";
 import io, { Socket } from "socket.io-client";
-import { IMessageByTopic } from "../../back-end/src/interfaces";
+import { IEditMessage, IMessageByTopic } from "../../back-end/src/interfaces";
 
 const BaseUrl = "http://localhost:8081/";
 
@@ -8,6 +8,7 @@ export enum REQS {
     ADD_USER = "user/add",
     ADD_TOPIC = "topic/add",
     ADD_MESSAGE = "message/add",
+    EDIT_MESSAGE = "message/edit",
     DELETE_MESSAGE = "message/delete",
     LOGIN = "user/login",
     GET_ALL_TOPICS = "topic/all/",
@@ -42,7 +43,7 @@ export class ChatWS {
 
     private socket: Socket;
 
-    constructor(topicName: string, appendMessage: any, removeMessage: any) {      //    appendMessage is a callback function 
+    constructor(topicName: string, appendMessage: any, removeMessage: any, updateMessage: any) {      //    appendMessage is a callback function 
 
         //###############################
         //      CONNECT TO SERVER 
@@ -51,14 +52,28 @@ export class ChatWS {
         //###############################
         this.socket = io("http://localhost:8081");
 
+        //###################
+        //      ON ADD     
+        //###################
         this.socket.on(topicName + "Add", (data) => {
             let message: IMessageByTopic = JSON.parse(data);
             appendMessage(message);
         });
 
+        //###################
+        //      ON REMOVE
+        //###################
         this.socket.on(topicName + "Remove", (data) => {
             let messageToRem: number = JSON.parse(data);
             removeMessage(messageToRem);
+        });
+
+        //###################
+        //      ON UPDATE
+        //###################
+        this.socket.on(topicName + "Update", (data) => {
+            let messageToEdit: IEditMessage = JSON.parse(data);
+            updateMessage(messageToEdit);
         });
 
     }
@@ -66,8 +81,8 @@ export class ChatWS {
     //###############################
     //      EMIT MESSAGES
     //###############################
-    public send(data: any) {
-        this.socket.emit("client test", data);
+    public send(topic: string, data: any) {
+        this.socket.emit(topic, data);
     }
 
     //#######################################

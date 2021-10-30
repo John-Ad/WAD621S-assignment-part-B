@@ -4,7 +4,7 @@
 
 import dotenv from "dotenv";
 import mysql from "mysql";
-import { IAddMessage, IAddTopic, IAddUser, IDeleteMessage, IGetAllTopics, IGetMessagesByTopic, ILogin } from "./interfaces";
+import { IAddMessage, IAddTopic, IAddUser, IDeleteMessage, IEditMessage, IGetAllTopics, IGetMessagesByTopic, ILogin } from "./interfaces";
 
 
 //##############################################
@@ -22,6 +22,8 @@ export enum QUERY_PROCS {
     ADD_USER = "call sp_addUser",
     ADD_TOPIC = "call sp_addTopic",
     ADD_MESSAGE = "call sp_addMessage",
+
+    EDIT_MESSAGE = "call sp_editMessage",
 
     LOGIN = "call sp_login",
 
@@ -57,6 +59,14 @@ export function buildQry(qProc: QUERY_PROCS, data: any): string {
         case QUERY_PROCS.ADD_MESSAGE:
             let messageAddData = (data as IAddMessage);
             return `${QUERY_PROCS.ADD_MESSAGE}('${messageAddData.username}', '${messageAddData.topicName}', '${messageAddData.content}');`;
+
+
+        //#####################
+        //      EDIT MESSAGE
+        //#####################
+        case QUERY_PROCS.EDIT_MESSAGE:
+            let messageEditData = (data as IEditMessage);
+            return `${QUERY_PROCS.EDIT_MESSAGE}(${messageEditData.messageID}, '${messageEditData.content}');`;
 
 
         //#####################

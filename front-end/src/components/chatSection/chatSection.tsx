@@ -16,7 +16,7 @@ import ChatMessage from "../chatMessage/chatMessage";
 //      INTERFACE IMPORTS
 //###############################
 
-import { IAddMessage, IAddTopic, IAllTopics, IGetAllTopics, IGetMessagesByTopic, IMessageByTopic, IResponse } from "../../../../back-end/src/interfaces";
+import { IAddMessage, IAddTopic, IAllTopics, IEditMessage, IGetAllTopics, IGetMessagesByTopic, IMessageByTopic, IResponse } from "../../../../back-end/src/interfaces";
 
 
 //###############################
@@ -133,7 +133,7 @@ class ChatSection extends React.Component<IProps, IState> {
             this.state.webSock.disconnect();
         }
         this.setState({ currentTopic: topic, messages: [] }, () => this.getMessagesByTopic());
-        this.setState({ webSock: new ChatWS(topic, this.appendMessage, this.removeMessage) })
+        this.setState({ webSock: new ChatWS(topic, this.appendMessage, this.removeMessage, this.updateMessage) })
     }
 
 
@@ -148,7 +148,6 @@ class ChatSection extends React.Component<IProps, IState> {
         let response: IResponse = await Connection.getReq(REQS.GET_MESSAGES_BY_TOPIC, data);
 
         if (response.stat != "ok") {
-            alert(response.data);
             return;
         }
 
@@ -179,6 +178,18 @@ class ChatSection extends React.Component<IProps, IState> {
         let messages = this.state.messages.slice();
         messages = messages.filter(m => m.MessageID != messageToRem);   // REMOVE MESSAGE WITH ID OF messageToRem
         this.setState({ messages: messages });
+    }
+
+
+    //###############################
+    //      UPDATE MESSAGE
+    //###############################
+    updateMessage = async (messageToUpdate: IEditMessage) => {
+        let updateMessages = [...this.state.messages];
+
+        this.setState({
+            messages: updateMessages.map(m => m.MessageID === messageToUpdate.messageID ? { MessageID: m.MessageID, Username: m.Username, Date_Added: m.Date_Added, Edited: 1, Content: messageToUpdate.content } : m)
+        });
     }
 
 
@@ -216,14 +227,14 @@ class ChatSection extends React.Component<IProps, IState> {
     //###############################
     render() {
         return (
-            <div id="chat-section-container">
+            <div id="chat-section-container" >
 
                 {
                     //###############################
                     //      TOPICS LIST
                     //###############################
                 }
-                <div id="topics-section" className="flex-column">
+                < div id="topics-section" className="flex-column" >
 
                     <div id="topics-title" className="center flex-row">
                         <h3 className="center">Topics</h3>
@@ -272,7 +283,7 @@ class ChatSection extends React.Component<IProps, IState> {
                     //      MESSAGING SECTION
                     //###############################
                 }
-                <div id="message-section-container" style={{ maxHeight: this.state.messageContainerHeight }}>
+                < div id="message-section-container" style={{ maxHeight: this.state.messageContainerHeight }}>
 
                     <div id="messages-container" className="max-size flex-column">
                         <div id="choose-topic-msg" className="center flex-row">
@@ -302,9 +313,9 @@ class ChatSection extends React.Component<IProps, IState> {
                         </div>
                     </div>
 
-                </div>
+                </div >
 
-            </div>
+            </div >
         )
     }
 }

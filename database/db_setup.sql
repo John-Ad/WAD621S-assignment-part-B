@@ -130,6 +130,33 @@ delimiter ;
 
 
 /*--#####################################################*/
+/*--#####     EDIT MESSAGE*/
+/*--#####################################################*/
+
+delimiter //
+create procedure sp_editMessage(
+    in mID int,
+    in mContent varchar(5000)
+)
+begin
+    if(mID not in(select MessageID from Message)) then
+        select 'message does not exist' as RESULT;
+    else
+        if(mContent!='') then
+            update Message
+            set Content=mContent
+            where MessageID = mID;
+
+            select 'ok' as RESULT;
+        else
+            select 'message cannot be empty' as RESULT;
+        end if;
+    end if;
+end //
+delimiter ;
+
+
+/*--#####################################################*/
 /*--#####     DELETE MESSAGE*/
 /*--#####################################################*/
 

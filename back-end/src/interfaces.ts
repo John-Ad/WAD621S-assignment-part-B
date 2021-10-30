@@ -48,6 +48,17 @@ export interface IAddMessage {
 
 
 //##############################################
+//      EDIT MESSAGE
+//##############################################
+
+export interface IEditMessage {
+    messageID: number,
+    content: string,
+    topicName: string
+}
+
+
+//##############################################
 //      DELETE MESSAGE
 //##############################################
 
