@@ -10,6 +10,8 @@
 #topics-section{
     grid-column: 1;
 
+    height: 100%;
+
     background-color: #C4C4C4;
 }
 
@@ -32,9 +34,9 @@
 
 #topics-list{
     width: 90%;
-    height: 70%;
     margin-top: 10px;
     background-color: #F8F8F8;
+    overflow: hidden;
     overflow-y: auto;
     border-radius: 10px;
 }
@@ -56,9 +58,9 @@
     color: #C4C4C4;
 }
 
-#topic-add-container{
+.topic-add-container{
     width: 90%;
-    height: 60px;
+    height: 40px;
     justify-content: space-evenly;
     margin-top: 10px;
     /*background-color: #60E0E9;*/
@@ -67,13 +69,13 @@
     border-radius: 10px;
 }
 
-#topic-add-container input{
+.topic-add-container input{
     width: 50%;
 }
 
-#topic-add-container div{
+.topic-add-container div{
     width: 20%;
-    height: 40px;
+    height: 30px;
     justify-content: center;
     padding-left: 5px;
     padding-right: 5px;
@@ -85,11 +87,28 @@
     border-radius: 10px;
 }
 
-#topic-add-container div:hover{
+.topic-add-container div:hover{
     cursor: pointer;
     background-color: #DDDDFF;
 }
 
+#show-all-topics{
+    width: 30%;
+    height: 20px;
+    justify-content: center;
+    padding-left: 5px;
+    padding-right: 5px;
+    margin-top: 10px;
+    font-weight: bolder;
+    font-family: sans-serif;
+    background-color: white;
+    border: 2px solid #888;
+    border-radius: 10px;
+}
+#show-all-topics:hover{
+    cursor: pointer;
+    background-color: #DDDDFF;
+}
 
 #message-section-container{
     display: grid;

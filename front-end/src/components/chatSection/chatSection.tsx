@@ -16,7 +16,7 @@ import ChatMessage from "../chatMessage/chatMessage";
 //      INTERFACE IMPORTS
 //###############################
 
-import { IAddMessage, IAddTopic, IAllTopics, IEditMessage, IGetAllTopics, IGetMessagesByTopic, IMessageByTopic, IResponse } from "../../../../back-end/src/interfaces";
+import { IAddMessage, IAddTopic, IAllTopics, IEditMessage, IGetAllTopics, IGetMessagesByTopic, IMessageByTopic, IResponse, ISearchTopics } from "../../../../back-end/src/interfaces";
 
 
 //###############################
@@ -37,11 +37,14 @@ interface IState {
     messages: IMessageByTopic[],
     topics: IAllTopics[],
     messageContainerHeight: number,
+    topicListHeight: number,
 
     currentTopic: string,
 
     inTopic: string,
+    inTopicSearch: string,
     inMessage: string
+
 }
 interface IProps {
     username: string
@@ -64,10 +67,12 @@ class ChatSection extends React.Component<IProps, IState> {
             webSock: null,
             currentTopic: "",
             inTopic: "",
+            inTopicSearch: "",
             inMessage: "",
             messages: [],
             topics: [],
-            messageContainerHeight: 0
+            messageContainerHeight: 0,
+            topicListHeight: 0
         }
     }
 
@@ -76,8 +81,9 @@ class ChatSection extends React.Component<IProps, IState> {
     //      COMPONENT DID MOUNT
     //###############################
     componentDidMount() {
+        let mxTLH = Math.floor((window.innerHeight - 90) * 0.6);
         let mxMsgH = window.innerHeight - 90;
-        this.setState({ messageContainerHeight: mxMsgH });
+        this.setState({ messageContainerHeight: mxMsgH, topicListHeight: mxTLH });
         this.getAllTopics();
     }
 
@@ -117,10 +123,32 @@ class ChatSection extends React.Component<IProps, IState> {
         let data: IGetAllTopics = {}
         let response: IResponse = await Connection.getReq(REQS.GET_ALL_TOPICS, data);
 
+
         if (response.stat === "ok") {
             this.setState({ topics: response.data });
         } else {
             this.setState({ topics: [] });
+        }
+    }
+
+
+    //###############################
+    //      SEARCH TOPICS
+    //###############################
+    searchTopics = async () => {
+        if (this.state.inTopicSearch !== "") {
+            let data: ISearchTopics = {
+                searchTerm: this.state.inTopicSearch
+            }
+            let response: IResponse = await Connection.getReq(REQS.SEARCH_TOPICS, data);
+
+            if (response.stat === "ok") {
+                this.setState({ topics: response.data, inTopicSearch: "" });
+            } else {
+                this.setState({ topics: [] });
+            }
+        } else {
+            alert("enter a search term");
         }
     }
 
@@ -240,40 +268,49 @@ class ChatSection extends React.Component<IProps, IState> {
                         <h3 className="center">Topics</h3>
                     </div>
 
-                    <div id="topics-list" className="center">
-                        <div>
+                    <div id="topics-list" style={{ maxHeight: this.state.topicListHeight }} className="center">
 
-                            {
-                                //###############################
-                                //      LIST ALL TOPICS
-                                //###############################
-                                this.state.topics.map(topic => {
-                                    return (
-                                        <h3 className="topic-item center" onClick={() => this.changeTopic(topic.TopicName)}>
-                                            {topic.TopicName}
-                                        </h3>
-                                    )
-                                })
-                            }
+                        {
+                            //###############################
+                            //      LIST ALL TOPICS
+                            //###############################
+                            this.state.topics.map(topic => {
+                                return (
+                                    <h3 className="topic-item center" onClick={() => this.changeTopic(topic.TopicName)}>
+                                        {topic.TopicName}
+                                    </h3>
+                                )
+                            })
+                        }
 
-                            {
-                                //###############################
-                                //      DISPLAY NO TOPICS MSG
-                                //###############################
-                                this.state.topics.length === 0 &&
-                                <h3>
-                                    No topics available
-                                </h3>
-                            }
+                        {
+                            //###############################
+                            //      DISPLAY NO TOPICS MSG
+                            //###############################
+                            this.state.topics.length === 0 &&
+                            <h3>
+                                No topics available
+                            </h3>
+                        }
 
+                    </div>
+
+                    <div className="topic-add-container center flex-row">
+                        <input value={this.state.inTopicSearch} type="text" onChange={ev => this.setState({ inTopicSearch: ev.target.value })} />
+                        <div className="flex-row" onClick={this.searchTopics}>
+                            <p>Search</p>
                         </div>
                     </div>
 
-                    <div id="topic-add-container" className="center flex-row">
-                        <input type="text" onChange={ev => this.setState({ inTopic: ev.target.value })} />
+                    <div className="topic-add-container center flex-row">
+                        <input value={this.state.inTopic} type="text" onChange={ev => this.setState({ inTopic: ev.target.value })} />
                         <div className="flex-row" onClick={this.addTopic}>
                             <p>Add</p>
                         </div>
+                    </div>
+
+                    <div id="show-all-topics" className="flex-row center" onClick={this.getAllTopics}>
+                        <p>Show All</p>
                     </div>
 
                 </div>
