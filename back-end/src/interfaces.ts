@@ -97,3 +97,12 @@ export interface IGetAllTopics {
 export interface IAllTopics {
     TopicName: string
 }
+
+
+//##############################################
+//     SEARCH TOPICS 
+//##############################################
+
+export interface ISearchTopics {
+    searchTerm: string
+}

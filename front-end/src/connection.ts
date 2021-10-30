@@ -12,7 +12,8 @@ export enum REQS {
     DELETE_MESSAGE = "message/delete",
     LOGIN = "user/login",
     GET_ALL_TOPICS = "topic/all/",
-    GET_MESSAGES_BY_TOPIC = "messages/topic/"
+    GET_MESSAGES_BY_TOPIC = "messages/topic/",
+    SEARCH_TOPICS = "topics/search/"
 }
 
 //###############################

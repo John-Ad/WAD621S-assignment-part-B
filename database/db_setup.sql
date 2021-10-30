@@ -233,4 +233,19 @@ end //
 delimiter ;
 
 
+/*--#####################################################*/
+/*--#####     SEARCH TOPICS*/
+/*--#####################################################*/
+
+delimiter //
+create procedure sp_searchTopics(
+    in searchTerm varchar(200)
+)
+begin
+    select TopicName
+    from Topic
+    where TopicName like searchTerm;
+end //
+delimiter ;
+
 
