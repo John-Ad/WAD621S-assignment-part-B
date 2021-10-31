@@ -115,6 +115,15 @@ class ChatMessage extends React.Component<IProps, IState> {
         return (
             <div id="chat-message" className="flex-column center">
                 <div id="message-header" className="flex-row">
+
+                    {
+                        //###############################
+                        //      EDITED TAG
+                        //###############################
+                        this.props.message.Edited === 1 &&
+                        <p>(edited)</p>
+                    }
+
                     <p>{this.props.message.Username}</p>
                     <p>{this.props.message.Date_Added}</p>
 

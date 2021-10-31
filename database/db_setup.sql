@@ -144,7 +144,7 @@ begin
     else
         if(mContent!='') then
             update Message
-            set Content=mContent
+            set Content=mContent, Edited=1
             where MessageID = mID;
 
             select 'ok' as RESULT;
@@ -245,6 +245,27 @@ begin
     select TopicName
     from Topic
     where TopicName like searchTerm;
+end //
+delimiter ;
+
+
+/*--#####################################################*/
+/*--#####     SEARCH MESSAGES*/
+/*--#####################################################*/
+
+delimiter //
+create procedure sp_searchMessages(
+    in tname varchar(100),
+    in searchTerm varchar(200)
+)
+begin
+    if(tname in(select TopicName from Topic)) then
+        select Username, MessageID, Date_Added, Content, Edited
+        from Message
+        where TopicName=tname AND Content like searchTerm;
+    else
+        select 'topic does not exist' as RESULT;
+    end if;
 end //
 delimiter ;
 

@@ -4,7 +4,7 @@
 
 import dotenv from "dotenv";
 import mysql from "mysql";
-import { IAddMessage, IAddTopic, IAddUser, IDeleteMessage, IEditMessage, IGetAllTopics, IGetMessagesByTopic, ILogin, ISearchTopics } from "./interfaces";
+import { IAddMessage, IAddTopic, IAddUser, IDeleteMessage, IEditMessage, IGetAllTopics, IGetMessagesByTopic, ILogin, ISearchMessages, ISearchTopics } from "./interfaces";
 
 
 //##############################################
@@ -32,7 +32,8 @@ export enum QUERY_PROCS {
     GET_MESSAGES_BY_TOPIC = "call sp_getMessagesByTopic",
     GET_ALL_TOPICS = "call sp_getAllTopics",
 
-    SEARCH_TOPICS = "call sp_searchTopics"
+    SEARCH_TOPICS = "call sp_searchTopics",
+    SEARCH_MESSAGES = "call sp_searchMessages"
 }
 
 //##############################################
@@ -111,6 +112,12 @@ export function buildQry(qProc: QUERY_PROCS, data: any): string {
             return `${QUERY_PROCS.SEARCH_TOPICS}('%${topicSearchData.searchTerm}%');`;
 
 
+        //############################
+        //      SEARCH MESSAGES
+        //############################
+        case QUERY_PROCS.SEARCH_MESSAGES:
+            let messageSearchData = (data as ISearchMessages);
+            return `${QUERY_PROCS.SEARCH_MESSAGES}('${messageSearchData.topicName}','%${messageSearchData.searchTerm}%');`;
     }
 }
 
