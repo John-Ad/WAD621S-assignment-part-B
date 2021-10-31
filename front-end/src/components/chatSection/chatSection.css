@@ -132,6 +132,32 @@
     border-radius: 10px;
 }
 
+.message-search-container{
+    width: 400px;
+    height: 35px;
+    margin-top: 10px;
+    justify-content: space-evenly;
+    background-color: #E2E2E2;
+    border-radius: 10px;
+}
+.message-search-container input{
+    width: 200px;
+}
+.message-search-container div{
+    width: 100px;
+    height: 20px;
+    font-weight: bolder;
+    font-family: sans-serif;
+    background-color: white;
+    border: 2px solid #888;
+    border-radius: 10px;
+}
+.message-search-container div:hover{
+    cursor: pointer;
+    background-color: #DDDDFF;
+}
+
+
 #send-message-container{
     grid-row: 2;
     justify-content: space-evenly;

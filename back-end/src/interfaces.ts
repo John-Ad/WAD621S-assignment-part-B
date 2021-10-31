@@ -106,3 +106,13 @@ export interface IAllTopics {
 export interface ISearchTopics {
     searchTerm: string
 }
+
+
+//##############################################
+//     SEARCH MESSAGES 
+//##############################################
+
+export interface ISearchMessages {
+    topicName: string,
+    searchTerm: string
+}

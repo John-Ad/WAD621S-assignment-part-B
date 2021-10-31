@@ -7,7 +7,7 @@ import express from 'express';
 import http from "http";
 import { Express, Request, Response, NextFunction } from 'express';
 import { Server } from "socket.io";
-import { IAddMessage, IMessageByTopic, IAddTopic, IAddUser, IGetAllTopics, ILogin, IResponse, IDeleteMessage, IGetMessagesByTopic, IEditMessage, ISearchTopics } from './interfaces';
+import { IAddMessage, IMessageByTopic, IAddTopic, IAddUser, IGetAllTopics, ILogin, IResponse, IDeleteMessage, IGetMessagesByTopic, IEditMessage, ISearchTopics, ISearchMessages } from './interfaces';
 import DB_Connection, { buildQry, QUERY_PROCS } from "./database";
 
 const app: Express = express();
@@ -153,6 +153,43 @@ app.get("/topics/search/:data", (req, res) => {
 
         res.json(response);
 
+    });
+});
+
+
+//###############################
+//      SEARCH MESSAGES      
+//###############################
+app.get("/messages/search/:data", (req, res) => {
+
+    let data: ISearchMessages = JSON.parse(req.params.data);
+
+    let response: IResponse = {
+        stat: "ok",
+        data: {}
+    }
+
+    dbConnection.query(buildQry(QUERY_PROCS.SEARCH_MESSAGES, data), (error, result) => {
+        if (error) {
+            console.log(error.sqlMessage);
+            response.stat = "err";
+            response.data = error.sqlMessage;
+        } else {
+            if (result[0].length > 0) {
+                if (result[0][0].RESULT) {
+                    response.stat = "err";
+                    response.data = result[0][0].RESULT;
+                } else {
+                    response.data = result[0];
+                }
+            } else {
+                response.stat = "err";
+                response.data = "no records found";
+            }
+
+        }
+
+        res.json(response);
     });
 });
 

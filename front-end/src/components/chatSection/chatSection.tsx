@@ -16,7 +16,7 @@ import ChatMessage from "../chatMessage/chatMessage";
 //      INTERFACE IMPORTS
 //###############################
 
-import { IAddMessage, IAddTopic, IAllTopics, IEditMessage, IGetAllTopics, IGetMessagesByTopic, IMessageByTopic, IResponse, ISearchTopics } from "../../../../back-end/src/interfaces";
+import { IAddMessage, IAddTopic, IAllTopics, IEditMessage, IGetAllTopics, IGetMessagesByTopic, IMessageByTopic, IResponse, ISearchMessages, ISearchTopics } from "../../../../back-end/src/interfaces";
 
 
 //###############################
@@ -43,7 +43,8 @@ interface IState {
 
     inTopic: string,
     inTopicSearch: string,
-    inMessage: string
+    inMessage: string,
+    inMessageSearch: string
 
 }
 interface IProps {
@@ -69,6 +70,7 @@ class ChatSection extends React.Component<IProps, IState> {
             inTopic: "",
             inTopicSearch: "",
             inMessage: "",
+            inMessageSearch: "",
             messages: [],
             topics: [],
             messageContainerHeight: 0,
@@ -183,6 +185,33 @@ class ChatSection extends React.Component<IProps, IState> {
             let elem = document.getElementById("messages-container");
             elem.scrollTop = elem.scrollHeight;
         });
+    }
+
+
+    //###############################
+    //      SEARCH MESSAGES
+    //###############################
+    searchMessages = async () => {
+        if (this.state.inMessageSearch !== "") {
+            let data: ISearchMessages = {
+                topicName: this.state.currentTopic,
+                searchTerm: this.state.inMessageSearch
+            }
+
+            let response: IResponse = await Connection.getReq(REQS.SEARCH_MESSAGES, data);
+
+            if (response.stat != "ok") {
+                this.setState({ messages: [] });
+                return;
+            }
+
+            this.setState({ messages: response.data, inMessageSearch: "" }, () => {
+                let elem = document.getElementById("messages-container");
+                elem.scrollTop = elem.scrollHeight;
+            });
+        } else {
+            alert("enter a search term");
+        }
     }
 
 
@@ -323,8 +352,16 @@ class ChatSection extends React.Component<IProps, IState> {
                 < div id="message-section-container" style={{ maxHeight: this.state.messageContainerHeight }}>
 
                     <div id="messages-container" className="max-size flex-column">
+
                         <div id="choose-topic-msg" className="center flex-row">
                             <h3 className="center">{this.state.currentTopic === "" ? "Choose a topic..." : this.state.currentTopic}</h3>
+                        </div>
+
+                        <div className="message-search-container center flex-row">
+                            <input value={this.state.inMessageSearch} type="text" onChange={ev => this.setState({ inMessageSearch: ev.target.value })} />
+                            <div className="flex-row" onClick={this.searchMessages}>
+                                <p className="center">Search</p>
+                            </div>
                         </div>
 
                         {
