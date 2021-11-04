@@ -43,6 +43,9 @@ interface IState {
 
 class ChatMessage extends React.Component<IProps, IState> {
 
+    //###############################
+    //      CONSTRUCTOR
+    //###############################
     constructor(props: IProps) {
         super(props);
 
@@ -53,11 +56,17 @@ class ChatMessage extends React.Component<IProps, IState> {
         }
     }
 
+    //###############################
+    //      COMP DID MOUNT
+    //###############################
     componentDidMount() {
         this.state.textareaRef.current.style.height = "";
         this.state.textareaRef.current.style.height = this.state.textareaRef.current.scrollHeight + "px";
     }
 
+    //###############################
+    //      COMP DID UPDATE
+    //###############################
     componentDidUpdate(prevProps: IProps, prevState: IState) {
         if (this.state.inEdit !== prevState.inEdit) {
             this.state.textareaRef.current.style.height = "";
@@ -111,9 +120,12 @@ class ChatMessage extends React.Component<IProps, IState> {
     }
 
 
+    //###############################
+    //      RENDER FUNCTION
+    //###############################
     render() {
         return (
-            <div id="chat-message" className="flex-column center">
+            <div id="chat-message" className="flex-column center" style={{ backgroundColor: (this.props.message.Username === this.props.username) ? "#E2E2E2" : "#F0F0F0" }}>
                 <div id="message-header" className="flex-row">
 
                     {
@@ -124,8 +136,8 @@ class ChatMessage extends React.Component<IProps, IState> {
                         <p>(edited)</p>
                     }
 
-                    <p>{this.props.message.Username}</p>
-                    <p>{this.props.message.Date_Added}</p>
+                    <p style={{ color: "#8888FF" }}>{this.props.message.Username}</p>
+                    <p style={{ color: "#8888FF" }}>{this.props.message.Date_Added.replace(/T|.000|Z/gi, " ")}</p>
 
                     {
                         //###############################

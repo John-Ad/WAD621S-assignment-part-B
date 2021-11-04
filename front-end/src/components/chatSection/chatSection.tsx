@@ -317,7 +317,7 @@ class ChatSection extends React.Component<IProps, IState> {
                             //      DISPLAY NO TOPICS MSG
                             //###############################
                             this.state.topics.length === 0 &&
-                            <h3>
+                            <h3 className="center flex-row" style={{ width: "fit-content" }}>
                                 No topics available
                             </h3>
                         }
