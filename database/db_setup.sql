@@ -28,7 +28,7 @@ create table Message(
     MessageID int primary key auto_increment,
     TopicName varchar(100) not null,
     Username varchar(100) not null,
-    Date_Added date not null,
+    Date_Added datetime not null,
     Content varchar(5000) not null,
     Edited bit not null,
 
@@ -113,7 +113,7 @@ begin
             select 'no content added' as RESULT;
         else
             if(uname in(select Username from UserInfo)) then
-                insert into Message(TopicName, Username, Date_Added, Content, Edited) values(tname, uname, curdate(), content, 0);
+                insert into Message(TopicName, Username, Date_Added, Content, Edited) values(tname, uname, now(), content, 0);
 
                 select Username, MessageID, Date_Added, Content, Edited
                 from Message
@@ -228,7 +228,8 @@ delimiter //
 create procedure sp_getAllTopics(
 )
 begin
-    select TopicName from Topic;
+    select TopicName from Topic
+    order by TopicName asc;
 end //
 delimiter ;
 
@@ -244,7 +245,8 @@ create procedure sp_searchTopics(
 begin
     select TopicName
     from Topic
-    where TopicName like searchTerm;
+    where TopicName like searchTerm
+    order by TopicName asc;
 end //
 delimiter ;
 
@@ -262,7 +264,8 @@ begin
     if(tname in(select TopicName from Topic)) then
         select Username, MessageID, Date_Added, Content, Edited
         from Message
-        where TopicName=tname AND Content like searchTerm;
+        where TopicName=tname AND Content like searchTerm
+        order by MessageID asc;
     else
         select 'topic does not exist' as RESULT;
     end if;
