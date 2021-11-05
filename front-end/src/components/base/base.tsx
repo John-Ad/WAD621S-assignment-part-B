@@ -10,7 +10,6 @@ import React from "react";
 //###############################
 
 import ChatSection from "../chatSection/chatSection";
-import AccountSection from "../accountSection/accountSection";
 import Header from "../header/header";
 
 
@@ -28,7 +27,6 @@ import LoginReg from "../loginRegistrationSection/loginRegistration";
 
 enum SECTION {
     LOGIN,
-    ACCOUNT,
     CHAT
 }
 
@@ -62,6 +60,10 @@ class Base extends React.Component<{}, IState> {
         this.setState({ username: uname, section: SECTION.CHAT });
     }
 
+    logout = () => {
+        this.setState({ username: "", section: SECTION.LOGIN })
+    }
+
     render() {
         return (
             <div id="main-container" className="flex-column">
@@ -72,7 +74,7 @@ class Base extends React.Component<{}, IState> {
                     //      HEADER
                     //###############################
 
-                    <Header />
+                    <Header logout={this.logout} />
 
                 }
 
@@ -81,6 +83,7 @@ class Base extends React.Component<{}, IState> {
                     //###############################
                     //      LOGIN/REGISTRATION
                     //###############################
+
                     this.state.section === SECTION.LOGIN &&
                     <LoginReg setDetails={this.setDetails} />
 
@@ -95,18 +98,6 @@ class Base extends React.Component<{}, IState> {
                     this.state.section === SECTION.CHAT &&
 
                     <ChatSection username={this.state.username} />
-                }
-
-
-                {
-
-                    //###############################
-                    //      ACCOUNT SECTION
-                    //###############################
-
-                    this.state.section === SECTION.ACCOUNT &&
-
-                    <AccountSection />
                 }
 
             </div>
