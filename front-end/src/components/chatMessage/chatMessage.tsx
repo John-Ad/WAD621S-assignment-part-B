@@ -125,7 +125,7 @@ class ChatMessage extends React.Component<IProps, IState> {
     //###############################
     render() {
         return (
-            <div id="chat-message" className="flex-column center" style={{ backgroundColor: (this.props.message.Username === this.props.username) ? "#E2E2E2" : "#F0F0F0" }}>
+            <div id="chat-message" className="flex-column center" style={{ backgroundColor: (this.props.message.Username === this.props.username) ? "#D2D2D2" : "#E2E2E2" }}>
                 <div id="message-header" className="flex-row">
 
                     {
@@ -136,8 +136,8 @@ class ChatMessage extends React.Component<IProps, IState> {
                         <p>(edited)</p>
                     }
 
-                    <p style={{ color: "#8888FF" }}>{this.props.message.Username}</p>
-                    <p style={{ color: "#8888FF" }}>{this.props.message.Date_Added.replace(/T|.000|Z/gi, " ")}</p>
+                    <p style={{ color: "#5555FF" }}>{this.props.message.Username}</p>
+                    <p style={{ color: "#5555FF" }}>{this.props.message.Date_Added.replace(/T|.000|Z/gi, " ")}</p>
 
                     {
                         //###############################
